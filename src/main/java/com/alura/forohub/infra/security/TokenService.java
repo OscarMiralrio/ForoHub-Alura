@@ -55,6 +55,21 @@ public class TokenService {
         return verifier.getSubject();
     }
 
+    public String gerUsername(String token){
+        String subject = null;
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(apiSecret);
+            subject = JWT.require(algorithm)
+                    .withIssuer("Foro Hub")
+                    .build()
+                    .verify(token)
+                    .getSubject();
+        } catch (JWTVerificationException exception){
+            throw new RuntimeException("Verifier invalido");
+        }
+        return subject;
+    }
+
     private Instant generarFechaExpiracion(){
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-05:00"));
     }

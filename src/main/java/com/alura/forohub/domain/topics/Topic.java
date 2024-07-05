@@ -29,4 +29,12 @@ public class Topic {
     private String course;
 
 
+    public Topic(TopicDTO topicDTO, String subject) {
+        this.title = topicDTO.title();
+        this.message = topicDTO.message();
+        this.date = LocalDateTime.now();
+        this.status = Status.NUEVO;
+        this.author = subject;
+        this.course = topicDTO.course();
+    }
 }

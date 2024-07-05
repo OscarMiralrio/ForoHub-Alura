@@ -1,9 +1,13 @@
 package com.alura.forohub.controller;
 
+import com.alura.forohub.commons.constants.ApiConstants;
+import com.alura.forohub.domain.service.TopicService;
 import com.alura.forohub.domain.topics.TopicDTO;
+import com.alura.forohub.infra.security.TokenService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,15 +17,17 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class TopicController {
 
-    @PostMapping
-    public ResponseEntity addTopic(
-            @RequestHeader @Parameter(hidden = true) HttpHeaders headers,
-            @RequestBody @Valid TopicDTO topic
-            ){
-        log.info("Inicio");
+    @Autowired
+    private TopicService topicService;
 
-        log.info(("Fin"));
-        return ResponseEntity.ok().build();
+    @PostMapping
+    public ResponseEntity<?> addTopic(
+            @RequestHeader @Parameter(hidden = true) HttpHeaders headers,
+            @RequestBody @Valid TopicDTO topicDTO){
+        log.info(ApiConstants.INICIO_LOG);
+        var topic = topicService.addTopic(headers,topicDTO);
+        log.info(ApiConstants.FIN_LOG);
+        return ResponseEntity.ok().body(topic);
     }
 
 }
