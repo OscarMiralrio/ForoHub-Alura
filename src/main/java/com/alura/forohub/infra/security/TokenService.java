@@ -1,11 +1,13 @@
 package com.alura.forohub.infra.security;
 
 import com.alura.forohub.domain.login.User;
+import com.alura.forohub.infra.exceptions.TokenException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,23 +16,26 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 @Service
+@Slf4j
 public class TokenService {
 
     @Value("${api.security.secret}")
     private String apiSecret;
 
     public String generarToken(User user){
+        String sing = "";
         try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
-            return JWT.create()
+            sing = JWT.create()
                     .withIssuer("Foro Hub")
                     .withSubject(user.getUsername())
                     .withClaim("id", user.getId())
                     .withExpiresAt(generarFechaExpiracion())
                     .sign(algorithm);
         } catch (JWTCreationException exception){
-            throw new RuntimeException();
+            throw new TokenException(exception.getMessage());
         }
+        return sing;
     }
 
     public String getSubject(String token){
@@ -47,10 +52,10 @@ public class TokenService {
                     .build()
                     .verify(token);
         } catch (JWTVerificationException exception){
-            System.out.println(exception.toString());
+            log.error(exception.toString());
         }
         if (verifier == null) {
-            throw new RuntimeException("Verifier invalido");
+            throw new TokenException("Verifier invalido");
         }
         return verifier.getSubject();
     }
@@ -65,7 +70,7 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception){
-            throw new RuntimeException("Verifier invalido");
+            throw new TokenException("Verifier invalido");
         }
         return subject;
     }
