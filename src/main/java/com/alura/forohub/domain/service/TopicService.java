@@ -23,7 +23,7 @@ public class TopicService {
     @Autowired
     private TokenService tokenService;
 
-    public DetailTopicDTO addTopic(HttpHeaders headers, TopicDTO topicDTO){
+    public NewTopicDTO addTopic(HttpHeaders headers, TopicDTO topicDTO){
         log.info(ApiConstants.INICIO_LOG);
         var duplicateTopics = topicRepository.findByTitleEqualsAndMessageEquals(topicDTO.title(),topicDTO.message()).size();
         if (duplicateTopics > 0){
@@ -34,11 +34,17 @@ public class TopicService {
         var topic = new Topic(topicDTO, tokenService.gerUsername(headerAuth));
         topicRepository.save(topic);
         log.info(ApiConstants.FIN_LOG);
-        return new DetailTopicDTO(topic);
+        return new NewTopicDTO(topic);
     }
 
-    public Page<DetailsAllTopicsDTO> getAllTopics(Pageable pageable) {
+    public Page<DetailTopicDTO> getAllTopics(Pageable pageable) {
         log.info("Obtiene la lista por paginación de todos los topicos registrados");
-        return topicRepository.findAll(pageable).map(DetailsAllTopicsDTO::new);
+        return topicRepository.findAll(pageable).map(DetailTopicDTO::new);
+    }
+
+    public DetailTopicDTO getDetailTopic(Long id) {
+        var topic = topicRepository.getReferenceById(id);
+        log.info("Se obtiene el detalle del tópico con el id :: " + id);
+        return new DetailTopicDTO(topic);
     }
 }

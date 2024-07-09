@@ -2,9 +2,8 @@ package com.alura.forohub.controller;
 
 import com.alura.forohub.commons.constants.ApiConstants;
 import com.alura.forohub.domain.service.TopicService;
-import com.alura.forohub.domain.topics.DetailsAllTopicsDTO;
+import com.alura.forohub.domain.topics.DetailTopicDTO;
 import com.alura.forohub.domain.topics.TopicDTO;
-import com.alura.forohub.infra.security.TokenService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -35,13 +34,21 @@ public class TopicController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DetailsAllTopicsDTO>> getAllTopics(
+    public ResponseEntity<Page<DetailTopicDTO>> getAllTopics(
             @PageableDefault(size = 10, sort = {"date"}) Pageable pageable
             ){
         log.info(ApiConstants.INICIO_LOG);
         var topics = topicService.getAllTopics(pageable);
         log.info(ApiConstants.FIN_LOG);
         return ResponseEntity.ok().body(topics);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DetailTopicDTO> getDetailTopic(@PathVariable Long id){
+        log.info(ApiConstants.INICIO_LOG);
+        var topic = topicService.getDetailTopic(id);
+        log.info(ApiConstants.FIN_LOG);
+        return ResponseEntity.ok(topic);
     }
 
 }
