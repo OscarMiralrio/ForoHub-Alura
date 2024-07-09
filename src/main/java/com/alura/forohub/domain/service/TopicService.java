@@ -1,14 +1,13 @@
 package com.alura.forohub.domain.service;
 
 import com.alura.forohub.commons.constants.ApiConstants;
-import com.alura.forohub.domain.topics.DetailTopicDTO;
-import com.alura.forohub.domain.topics.Topic;
-import com.alura.forohub.domain.topics.TopicDTO;
-import com.alura.forohub.domain.topics.TopicRepository;
+import com.alura.forohub.domain.topics.*;
 import com.alura.forohub.infra.exceptions.ValidationException;
 import com.alura.forohub.infra.security.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +37,8 @@ public class TopicService {
         return new DetailTopicDTO(topic);
     }
 
-
-
+    public Page<DetailsAllTopicsDTO> getAllTopics(Pageable pageable) {
+        log.info("Obtiene la lista por paginación de todos los topicos registrados");
+        return topicRepository.findAll(pageable).map(DetailsAllTopicsDTO::new);
+    }
 }
