@@ -37,4 +37,13 @@ public class Topic {
         this.author = subject;
         this.course = topicDTO.course();
     }
+
+    public void updateTopic(TopicDTO topicDTO){
+        this.title = topicDTO.title();
+        this.message = topicDTO.message();
+        this.course = topicDTO.course();
+        this.date = LocalDateTime.now();
+        status = Status.MODIFICADO;
+    }
+
 }

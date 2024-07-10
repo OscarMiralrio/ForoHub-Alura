@@ -13,7 +13,8 @@ public enum Status {
     EN_ESPERA,
     RECHAZADO,
     DUPLICADO,
-    ARCHIVADO
+    ARCHIVADO,
+    MODIFICADO
 
 
 

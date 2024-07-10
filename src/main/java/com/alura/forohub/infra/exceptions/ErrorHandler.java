@@ -3,6 +3,7 @@ package com.alura.forohub.infra.exceptions;
 import com.alura.forohub.commons.constants.ApiConstants;
 import com.alura.forohub.infra.exceptions.models.ErrorResponse;
 import com.alura.forohub.infra.exceptions.models.ErrorType;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -27,6 +29,7 @@ public class ErrorHandler {
                 .type(ErrorType.FATAL.name())
                 .details(ex.getMessage())
                 .timestamp(LocalDateTime.now())
+                .location(req.getRequestURI())
                 .uuid(req.getHeader(ApiConstants.UUID))
                 .build();
     }
@@ -118,5 +121,42 @@ public class ErrorHandler {
                 .uuid(httpServletRequest.getHeader(ApiConstants.UUID.toLowerCase()))
                 .build();
     }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse resolvedEntityNotFoundException(
+            HttpServletRequest httpServletRequest,
+            EntityNotFoundException exception
+    ){
+        log.error("Error :: " + exception.getMessage());
+        return ErrorResponse.builder()
+                .type(ErrorType.ERROR.name())
+                .code(String.valueOf(HttpStatus.NOT_FOUND.value()))
+                .details(exception.getMessage())
+                .moreInfo("No se encontró el tópico con el ID ingresado")
+                .timestamp(LocalDateTime.now())
+                .location(httpServletRequest.getRequestURI())
+                .uuid(httpServletRequest.getHeader(ApiConstants.UUID.toLowerCase()))
+                .build();
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse resolvedMethodArgumentTypeMismatchException(
+            HttpServletRequest httpServletRequest,
+            MethodArgumentTypeMismatchException exception
+    ){
+        log.error("Error :: " + exception.getMessage());
+        return ErrorResponse.builder()
+                .type(ErrorType.ERROR.name())
+                .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+                .details(exception.getMessage())
+                .timestamp(LocalDateTime.now())
+                .location(httpServletRequest.getRequestURI())
+                .uuid(httpServletRequest.getHeader(ApiConstants.UUID.toLowerCase()))
+                .build();
+    }
+
+
 
 }

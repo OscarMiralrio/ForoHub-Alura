@@ -5,6 +5,7 @@ import com.alura.forohub.domain.login.User;
 import com.alura.forohub.infra.security.JwtTokenDTO;
 import com.alura.forohub.infra.security.TokenService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
+@Slf4j
 public class LoginController {
 
     @Autowired
@@ -33,11 +35,10 @@ public class LoginController {
         var authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginDTO.username(),
                 loginDTO.password());
-
         var usuarioAutenticado = authenticationManager.authenticate(authenticationToken);
-
+        log.info("Se autentica el usuario ingresado...");
         var jwtToken = tokenService.generarToken((User) usuarioAutenticado.getPrincipal());
-
+        log.info("Se genera token de sesión...");
         return ResponseEntity.ok(new JwtTokenDTO(jwtToken));
     }
 

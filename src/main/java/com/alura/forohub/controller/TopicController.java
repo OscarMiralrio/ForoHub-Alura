@@ -3,7 +3,9 @@ package com.alura.forohub.controller;
 import com.alura.forohub.commons.constants.ApiConstants;
 import com.alura.forohub.domain.service.TopicService;
 import com.alura.forohub.domain.topics.DetailTopicDTO;
+import com.alura.forohub.domain.topics.NewTopicDTO;
 import com.alura.forohub.domain.topics.TopicDTO;
+import com.alura.forohub.domain.topics.UpdateTopicDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -49,6 +52,15 @@ public class TopicController {
         var topic = topicService.getDetailTopic(id);
         log.info(ApiConstants.FIN_LOG);
         return ResponseEntity.ok(topic);
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<DetailTopicDTO> updateTopic(
+            @PathVariable Long id,
+            @RequestBody @Valid TopicDTO updateTopicDTO){
+        var updateTopic = topicService.updateTopic(id,updateTopicDTO);
+        return ResponseEntity.ok(updateTopic);
     }
 
 }
