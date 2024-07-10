@@ -20,6 +20,9 @@ mediante la generacion de tokens de sesión.
 - Spring Boot 3
 - JPA
 - PostgreSQL
+- Open API (Swagger)
+- Spring Security
+- JWT
 
 <h2> 🧑‍💻 Instalación </h2>
 
