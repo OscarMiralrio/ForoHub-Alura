@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -59,8 +60,18 @@ public class TopicController {
     public ResponseEntity<DetailTopicDTO> updateTopic(
             @PathVariable Long id,
             @RequestBody @Valid TopicDTO updateTopicDTO){
+        log.info(ApiConstants.INICIO_LOG);
         var updateTopic = topicService.updateTopic(id,updateTopicDTO);
+        log.info(ApiConstants.FIN_LOG);
         return ResponseEntity.ok(updateTopic);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteTopic(@PathVariable Long id){
+        log.info(ApiConstants.INICIO_LOG);
+        topicService.deleteTopic(id);
+        log.info(ApiConstants.FIN_LOG);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

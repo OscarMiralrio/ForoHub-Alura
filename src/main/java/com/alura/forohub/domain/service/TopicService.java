@@ -59,4 +59,14 @@ public class TopicService {
         log.info("Se actualiza la información del tópico...");
         return new DetailTopicDTO(topic.get());
     }
+
+    public void deleteTopic(Long id) {
+        Optional<Topic> topic = topicRepository.findById(id);
+        if (!topic.isPresent()){
+            throw new ValidationException("El tópico no fue encontrado con el ID {" + id +"}");
+        }
+        log.info("Se valida de que el ID exista...");
+        topicRepository.deleteById(id);
+        log.info("Se elimina tópico con ID {" + id +"}");
+    }
 }
