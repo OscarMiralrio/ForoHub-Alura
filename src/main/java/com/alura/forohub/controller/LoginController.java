@@ -4,6 +4,7 @@ import com.alura.forohub.domain.login.LoginDTO;
 import com.alura.forohub.domain.login.User;
 import com.alura.forohub.infra.security.JwtTokenDTO;
 import com.alura.forohub.infra.security.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class LoginController {
     @Autowired
     private TokenService tokenService;
 
+    @Operation(summary = "Inicio de sesión.")
     @PostMapping
     public ResponseEntity login(
             @RequestBody

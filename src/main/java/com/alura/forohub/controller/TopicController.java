@@ -3,9 +3,8 @@ package com.alura.forohub.controller;
 import com.alura.forohub.commons.constants.ApiConstants;
 import com.alura.forohub.domain.service.TopicService;
 import com.alura.forohub.domain.topics.DetailTopicDTO;
-import com.alura.forohub.domain.topics.NewTopicDTO;
 import com.alura.forohub.domain.topics.TopicDTO;
-import com.alura.forohub.domain.topics.UpdateTopicDTO;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +26,7 @@ public class TopicController {
     @Autowired
     private TopicService topicService;
 
+    @Operation(summary = "Crea nuevo tópico")
     @PostMapping
     public ResponseEntity<?> addTopic(
             @RequestHeader @Parameter(hidden = true) HttpHeaders headers,
@@ -37,6 +37,7 @@ public class TopicController {
         return ResponseEntity.ok().body(topic);
     }
 
+    @Operation(summary = "Obtiene todos los tópicos con paginación")
     @GetMapping
     public ResponseEntity<Page<DetailTopicDTO>> getAllTopics(
             @PageableDefault(size = 10, sort = {"date"}) Pageable pageable
@@ -47,17 +48,22 @@ public class TopicController {
         return ResponseEntity.ok().body(topics);
     }
 
+    @Operation(summary = "Obtiene detalle de tópico por ID")
     @GetMapping("/{id}")
-    public ResponseEntity<DetailTopicDTO> getDetailTopic(@PathVariable Long id){
+    public ResponseEntity<DetailTopicDTO> getDetailTopic(
+            @Parameter( description = "ID del tópico")
+            @PathVariable Long id){
         log.info(ApiConstants.INICIO_LOG);
         var topic = topicService.getDetailTopic(id);
         log.info(ApiConstants.FIN_LOG);
         return ResponseEntity.ok(topic);
     }
 
+    @Operation(summary = "Actuliza tópico")
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<DetailTopicDTO> updateTopic(
+            @Parameter(description = "ID del tópico")
             @PathVariable Long id,
             @RequestBody @Valid TopicDTO updateTopicDTO){
         log.info(ApiConstants.INICIO_LOG);
@@ -66,8 +72,11 @@ public class TopicController {
         return ResponseEntity.ok(updateTopic);
     }
 
+    @Operation(summary = "Elimina tópico por ID")
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteTopic(@PathVariable Long id){
+    public ResponseEntity deleteTopic(
+            @Parameter(description = "ID del tópico")
+            @PathVariable Long id){
         log.info(ApiConstants.INICIO_LOG);
         topicService.deleteTopic(id);
         log.info(ApiConstants.FIN_LOG);
